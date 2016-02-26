@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paypal Test</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+     <form>
+        <table>
+            <tr>
+                <td colspan="2"><input type="text" id="name" name="name" placeholder="Doe" required/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="text" id="card_number" name="card_number" value="4032032634220690" placeholder="1234567890123456" required/></td>
+            </tr>
+             <tr>
+                <td>
+                    <select id='expiry_month'>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='3'>3</option>
+                        <option value='4'>4</option>
+                        <option value='5'>5</option>
+                        <option value='6'>6</option>
+                        <option value='7'>7</option>
+                        <option value='8'>8</option>
+                        <option value='9'>9</option>
+                        <option value='10'>10</option>
+                        <option value='11'>11</option>
+                        <option value='12'>12</option>
+                    </select>
+                      <select id='expiry_year'>
+                        <option value='2016'>2016</option>
+                        <option value='2017'>2017</option>
+                        <option value='2018'>2018</option>
+                    </select>
+                </td>
+                <td><input type="text" id="cvv" name="cvv" placeholder="123" required/></td>
+            </tr>
+            <tr>
+                <td>
+                    <label id="lb_currency">Currency</label>
+                    <select id="currencies">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="AUD">AUD</option>
+                        <option value="THB">THB</option>
+                        <option value="SGD">SGD</option>
+                        <option value="HKD">HKD</option>
+                    </select>
+                </td>
+                <td>
+                    <label id="lb_cardtype">Card Type</label>
+                    <select id="cardtype">
+                        <option value="visa">VISA</option>
+                        <option value="master">MASTER</option>
+                        <option value="amex">AMEX</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Price : <input type="text" id="amount" name="amount" required/></td>
+            </tr>
+            <tr>
+                <td colspan="2"> <input type="button" id="btnCheckout" value="Check Out." /></td>
+            </tr>
+        </table>
+    </form>
+    <p class="log"></p>
+</body>
+
+<script>
+    $("#btnCheckout").click(function (event) {
+        //event.preventDefault();
+
+
+
+        var frm_name = $('#name').val();
+        var frm_card_number = $('#card_number').val();
+        var frm_card_expiry_date = $('#expiry_date').val();
+        var frm_cvv = $('#cvv').val();
+        var frm_card_type = $('#cardtype').val();
+        var frm_currencies = $('#currencies').val();
+        var frm_expiry_month = $('#expiry_month').val();
+        var frm_expiry_year = $('#expiry_year').val();
+        var frm_amount = $('#amount').val();
+
+
+        if (new Date(frm_expiry_year, frm_expiry_month) < new Date(new Date().getFullYear(), new Date().getMonth())){
+          alert('Expiry Date cannot be in the past.');
+          return false;
+        }
+      
+        var parameters = { name: frm_name, card_number: frm_card_number, expiry_month: frm_expiry_month, expiry_year: frm_expiry_year, cvv: frm_cvv, cardtype: frm_card_type, currency: frm_currencies, amount: frm_amount };
+
+        $.ajax({
+            url: '/checkout',
+            type: 'POST',
+            data: parameters,
+            timeout: 10000,
+            success: function (data) {
+                   $('.log').html(data);   
+            },
+            error: function() {
+                   $('.log').html('Error.');    
+            },
+
+        });
+
+    });
+</script>
+</html>
